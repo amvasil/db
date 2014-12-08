@@ -1,0 +1,37 @@
+create table subs (sub_id int primary key,
+		   name varchar(30) not null,
+	           sec_name varchar(30),
+		   surname varchar(100) not null);
+create table plans (plan_id int primary key,
+	            plan_name varchar(100) not null unique,
+		    call_cost float not null,
+		    sms_cost float not null);
+create table balances (balance_id int primary key,
+		      balance float not null);
+create table bonuses (bonus_id int primary key,
+		     bonus_name varchar(100) not null unique,
+	             bonus_type int not_null,
+		     discont float not_null);
+create table subs_conditions (sc_id int primary key,
+			  sub_id int references subs(sub_id),
+			  plan_id int references plans(plan_id),
+		          balance_id int references 							balances(balance_id));
+create table subs_bonuses (sb_id int primary key,
+			   sc_id int references 					subs_conditions(sc_id),
+			   bonus_id int references 					bonuses(bonus_id));
+create table numbers (number_id int primary key,
+		      number int unique not null,
+		      sc_id int references subs_conditions(sc_id));
+
+create table transactions(transaction_id int primary key,
+			  amount float not null,
+			  sc_id int references                                			subs_conditions(sc_id));
+
+
+create table activity (activity_id int primary key,
+		       activity_type int not null,
+		       outcome char(1) not_null,
+		       length int not_null,
+		       sc_id int references subs_conditions(sc_id));
+commit;
+		        

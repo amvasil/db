@@ -1,0 +1,1 @@
+connect 'tiger.ftk.spbstu.ru:/var/lib/firebird/435011/nanofon.fdb' user 'SYSDBA' password 'masterkey';
