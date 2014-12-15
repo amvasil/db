@@ -1,0 +1,245 @@
+commit;
+drop database;
+commit;
+SET NAMES WIN1251;
+create database 'C:/db/nanofon.fdb' user 'SYSDBA' password 'masterkey' DEFAULT CHARACTER SET WIN1251;
+connect 'C:/db/nanofon.fdb' user 'SYSDBA' password 'masterkey';
+
+create table persons (
+			id int primary key,
+			passport decimal(10,0) not null unique check( passport >= 1000000000),
+			name varchar(20) not null,
+			sec_name varchar(20),
+			surname varchar(20) not null,
+			birth date not null);
+create table tariffs (
+			id int primary key,
+			tariff_name varchar(20) unique);
+create table numbers (
+			id int primary key,
+			number decimal(10,0) not null unique check( number >= 9210000000 and number <= 9219999999 ));
+create table subs (
+			id int primary key,
+			person int references persons(id) not null,
+			number int references numbers(id) not null,
+			balance decimal(10,2) not null,
+			tariff int references tariffs(id) not null);
+create table payments (
+			id int primary key,
+			sub int references subs(id) not null,
+			amount decimal(8,2) not null,
+			ptime timestamp not null);
+create table sms_prices (
+			id int primary key,
+			price decimal(6,2) not null);
+create table call_prices (
+			id int primary key,
+			price decimal(6,2) not null);
+create table actions (
+			id int primary key);
+create table transactions (
+			id int primary key,
+			sub int references subs(id) not null,
+			action int references actions(id) not null,
+			amount int not null,
+			actime timestamp not null);
+create table bonuses (
+			id int primary key,
+			name varchar (20) not null unique,
+			minutes_amount int,
+			sms_amount int,
+			payments_amount decimal(10,2),
+			init_amount_calls int,
+			init_amount_sms int,
+			days int);
+create table actions_bonuses(
+			id int primary key,
+			action int references actions(id) not null,
+			bonus int references bonuses(id) not null);
+create table actions_tariffs(
+			id int primary key,
+			action int references actions(id) not null,
+			tariff int references tariffs(id) not null);
+create table subs_bonuses(
+			id int primary key,
+			sub int references subs(id) not null,
+			bonus int references bonuses(id) not null,
+			amount_left_sms int,
+			amount_left_calls int,
+			start_date date);			
+insert into tariffs values
+(1,'Ïğîñòåöêèé');
+insert into tariffs values
+(2,'SMS-çàâèñèìûé');
+insert into tariffs values
+(3,'Çâîíèòü ìàìå');
+insert into tariffs values
+(4,'Âñå ïî 3');
+insert into tariffs values
+(5,'Ìîäåì');
+insert into tariffs values
+(6,'Ñòàáèëüíûé');
+
+insert into bonuses values
+(1,'Áîëòóí',100,NULL,NULL,NULL,NULL,30);
+insert into bonuses values
+(2,'Òåëåãğàôèñò',NULL,300,NULL,NULL,10,30);
+insert into bonuses values
+(3,'Ìåöåíàò',NULL,NULL,1000,100,100,NULL);
+
+insert into sms_prices values (1,0.0);
+insert into sms_prices values (2,2.0);
+insert into sms_prices values (3,5.0);
+insert into sms_prices values (10,3.0);
+
+insert into call_prices values (4,0.0);
+insert into call_prices values (5,1.0);
+insert into call_prices values (6,2.0);
+insert into call_prices values (7,3.0);
+
+create table inet_prices (
+		id int primary key,
+		price decimal(6,2) not null);
+		
+insert into inet_prices values (8,9.0);
+insert into inet_prices values (9,15.0);
+insert into inet_prices values (11,3.0);
+
+insert into actions values (1);
+insert into actions values (2);
+insert into actions values (3);
+insert into actions values (4);
+insert into actions values (5);
+insert into actions values (6);
+insert into actions values (7);
+insert into actions values (8);
+insert into actions values (9);
+insert into actions values (10);
+insert into actions values (11);
+
+insert into actions_tariffs values (1,3,1);
+insert into actions_tariffs values (2,6,1);
+insert into actions_tariffs values (3,2,2);
+insert into actions_tariffs values (4,7,2);
+insert into actions_tariffs values (5,3,3);
+insert into actions_tariffs values (6,5,3);
+insert into actions_tariffs values (7,8,1);
+insert into actions_tariffs values (8,8,2);
+insert into actions_tariffs values (9,9,3);
+
+insert into actions_tariffs values (10,10,4);
+insert into actions_tariffs values (11,7,4);
+insert into actions_tariffs values (12,11,4);
+insert into actions_tariffs values (13,3,5);
+insert into actions_tariffs values (14,7,5);
+insert into actions_tariffs values (15,11,5);
+insert into actions_tariffs values (16,3,6);
+insert into actions_tariffs values (17,7,6);
+insert into actions_tariffs values (18,9,6);
+
+
+insert into actions_bonuses values (1,5,1);
+insert into actions_bonuses values (2,1,2);
+insert into actions_bonuses values (3,1,3);
+insert into actions_bonuses values (4,4,3);
+
+insert into persons values 
+(1,4001111222,'ÈÂÀÍ','ÈÂÀÍÎÂÈ×','ÀÍÄĞÅÅÂ','1990-10-04');
+insert into persons values 
+(2,4001113222,'ÈÂÀÍ','ÎËÅÃÎÂÈ×','ÂÈÉ','1990-10-04');
+insert into persons values 
+(3,4002342422,'ÈÃÎĞÜ','ÏÅÒĞÎÂÈ×','ÈÂÀÍÎÂ','1956-11-14');
+insert into persons values 
+(4,4023456422,'ÈÂÀÍ','ÈÂÀÍÎÂÈ×','ÈÂÀÍÎÂ','1978-12-24');
+insert into persons values 
+(5,4111116422,'ÀËÅÊÑÀÍÄĞ','ÀĞÒÅÌÎÂÈ×','ÑÅ×ÈÍ','1989-01-24');
+insert into persons values 
+(6,4100556422,'ÀËÅÊÑÀÍÄĞ','ÈÂÀÍÎÂÈ×','ÁÓÉÍÎÂ','1949-11-24');
+insert into persons values 
+(7,4113759052,'ÈÂÀÍ','ÃÅÍÍÀÄÜÅÂÈ×','ÁÀĞÀÍÎÂ','1977-03-03');
+insert into persons values 
+(8,4113243443,'ÈÃÎĞÜ','ÈÃÎĞÅÂÈ×','ÑÓÕÎÂ','1987-01-03');
+insert into persons values 
+(9,4123876543,'ÀËÅÊÑÀÍÄĞ','ÀËÅÊÑÀÍÄĞÎÂÈ×','ÑÈÄÎĞÎÂ','1989-01-24');
+insert into persons values 
+(10,4109566332,'ÀÍÄĞÅÉ','ÏÅÒĞÎÂÈ×','ÀÍÄĞÅÅÂ','1999-01-24');
+insert into persons values 
+(11,4122222243,'ÈÍÍÀ','ÈÂÀÍÎÂÍÀ','ÑÓÕÎÂÀ','1989-01-28');
+insert into persons values 
+(12,4191986043,'ÀËÅÍÀ','ÈÂÀÍÎÂÍÀ','ÁÀĞÀÍÎÂÀ','1988-01-24');
+insert into persons values 
+(13,4198764643,'ÈĞÈÍÀ','ÎËÅÃÎÂÍÀ','ÑÅ×ÈÍÀ','1948-07-21');
+insert into persons values 
+(14,4145334223,'ÎËÜÃÀ','ÀËÅÊÑÀÍÄĞÎÂÍÀ','ÎËÜÃÎÂÀ','1978-12-21');
+
+create sequence gen_numid;
+insert into numbers values (gen_id(gen_numid,1),rand()*9999999+9210000000);
+insert into numbers values (gen_id(gen_numid,1),rand()*9999999+9210000000);
+insert into numbers values (gen_id(gen_numid,1),rand()*9999999+9210000000);
+insert into numbers values (gen_id(gen_numid,1),rand()*9999999+9210000000);
+insert into numbers values (gen_id(gen_numid,1),rand()*9999999+9210000000);
+insert into numbers values (gen_id(gen_numid,1),rand()*9999999+9210000000);
+insert into numbers values (gen_id(gen_numid,1),rand()*9999999+9210000000);
+insert into numbers values (gen_id(gen_numid,1),rand()*9999999+9210000000);
+insert into numbers values (gen_id(gen_numid,1),rand()*9999999+9210000000);
+insert into numbers values (gen_id(gen_numid,1),rand()*9999999+9210000000);
+insert into numbers values (gen_id(gen_numid,1),rand()*9999999+9210000000);
+insert into numbers values (gen_id(gen_numid,1),rand()*9999999+9210000000);
+insert into numbers values (gen_id(gen_numid,1),rand()*9999999+9210000000);
+insert into numbers values (gen_id(gen_numid,1),rand()*9999999+9210000000);
+insert into numbers values (gen_id(gen_numid,1),rand()*9999999+9210000000);
+			
+insert into subs values (
+1,1,1,100.0,1);
+insert into subs values (
+2,2,2,150.0,2);
+insert into subs values (
+3,3,3,-50.0,3);
+insert into subs values (
+4,4,4,152.34,2);
+insert into subs values (
+5,5,5,12.22,1);
+insert into subs values (
+6,6,6,100.0,1);
+insert into subs values (
+7,7,7,100.0,1);
+insert into subs values (
+8,8,8,100.0,1);
+insert into subs values (
+9,9,9,100.0,1);
+insert into subs values (
+10,10,10,100.0,4);
+insert into subs values (
+11,11,11,100.0,1);
+insert into subs values (
+12,12,12,100.0,6);
+insert into subs values (
+13,13,13,100.0,1);
+insert into subs values (
+14,14,14,100.0,5);
+
+
+insert into payments values
+(1,1,100.0,current_timestamp (0));
+insert into payments values
+(2,2,10.0,current_timestamp (0));
+insert into payments values
+(3,3,10.0,current_timestamp (0));
+insert into payments values
+(4,4,50.0,current_timestamp (0));
+insert into payments values
+(5,5,25.50,current_timestamp (0));
+			
+commit;
+
+
+
+
+
+
+
+alter table tariffs add 
+			min_balance decimal(10,2) default 0.0 not null;
+update tariffs set min_balance = -10.0 where id = 3;
+commit;
+

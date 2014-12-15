@@ -1,0 +1,98 @@
+
+insert into persons values 
+(1,4001111222,'ÈÂÀÍ','ÈÂÀÍÎÂÈ×','ÀÍÄĞÅÅÂ','1990-10-04');
+insert into persons values 
+(2,4001113222,'ÈÂÀÍ','ÎËÅÃÎÂÈ×','ÂÈÉ','1990-10-04');
+insert into persons values 
+(3,4002342422,'ÈÃÎĞÜ','ÏÅÒĞÎÂÈ×','ÈÂÀÍÎÂ','1956-11-14');
+insert into persons values 
+(4,4023456422,'ÈÂÀÍ','ÈÂÀÍÎÂÈ×','ÈÂÀÍÎÂ','1978-12-24');
+insert into persons values 
+(5,4111116422,'ÀËÅÊÑÀÍÄĞ','ÀĞÒÅÌÎÂÈ×','ÑÅ×ÈÍ','1989-01-24');
+
+insert into tariffs values(
+			1,	'SIMPLE');
+insert into numbers values (
+			1, 9216563548);
+insert into numbers values (
+			2, 9215346454);
+insert into numbers values (
+			3, 9213455344);
+insert into numbers values (
+			4, 9215455566);
+insert into numbers values (
+			5, 9215433566);
+			
+insert into subs values (
+1,1,1,100.0,1);
+insert into subs values (
+2,2,2,150.0,1);
+insert into subs values (
+3,3,3,-50.0,1);
+insert into subs values (
+4,4,4,152.34,1);
+insert into subs values (
+5,5,5,12.22,1);
+
+
+select persons.name,persons.surname,numbers.number,tariffs.tariff_name,subs.balance
+from persons,numbers,tariffs,subs
+where subs.person=persons.id and
+	  subs.number=numbers.id and
+	  subs.tariff=tariffs.id ;
+
+
+commit;
+
+
+
+
+
+
+
+
+
+commit;
+drop database;
+commit;
+SET NAMES WIN1251;
+create database 'C:/db/nanofon.fdb' user 'SYSDBA' password 'masterkey' DEFAULT CHARACTER SET WIN1251;
+
+create database 'C:/db/nanofon.fdb' user 'SYSDBA' password 'masterkey';
+
+create database 'C:/db/nanofon.fdb' user 'SYSDBA' password 'masterkey';
+commit;
+drop database;
+commit;
+SET NAMES WIN1251;
+create database 'C:/db/nanofon.fdb' user 'SYSDBA' password 'masterkey';
+connect 'C:/db/nanofon.fdb' user 'SYSDBA' password 'masterkey';
+
+create table persons (
+			id int primary key,
+			passport varchar(10) not null unique,
+			name varchar(100) not null,
+			sec_name varchar(100),
+			surname varchar(100) not null,
+			birth date not null);
+create table tariffs (
+			id int primary key,
+			name varchar(50)
+			);
+create table numbers (
+			id int primary key,
+			number varchar(10)  not null unique);
+create table subs (
+			id int primary key,
+			person int references persons(id),
+			number int references numbers(id),
+			balance decimal(10,2),
+			tariff int references tariffs(id));
+commit;	        
+
+insert into persons values 
+(1,'4001111222','ÈÂÀÍ','ÀÍÄĞÅÅÂ'
+
+and
+	  subs.number=numbers.id and
+	  subs.tariff=tariffs.id 

@@ -1,0 +1,88 @@
+insert into tariffs values
+(1,'Ïğîñòåöêèé');
+insert into tariffs values
+(2,'SMS-çàâèñèìûé');
+insert into tariffs values
+(3,'Çâîíèòü ìàìå');
+
+insert into bonuses values
+(1,'Áîëòóí',100,NULL,NULL,NULL,NULL,30);
+insert into bonuses values
+(2,'Òåëåãğàôèñò',NULL,300,NULL,NULL,10,30);
+insert into bonuses values
+(3,'Ìåöåíàò',NULL,NULL,1000,100,100,NULL);
+
+insert into sms_prices values (1,0.0);
+insert into sms_prices values (2,2.0);
+insert into sms_prices values (3,5.0);
+
+insert into call_prices values (4,0.0);
+insert into call_prices values (5,1.0);
+insert into call_prices values (6,2.0);
+insert into call_prices values (7,3.0);
+
+insert into actions values (1);
+insert into actions values (2);
+insert into actions values (3);
+insert into actions values (4);
+insert into actions values (5);
+insert into actions values (6);
+insert into actions values (7);
+
+insert into actions_tariffs values (1,3,1);
+insert into actions_tariffs values (2,6,1);
+insert into actions_tariffs values (3,2,2);
+insert into actions_tariffs values (4,7,2);
+insert into actions_tariffs values (5,3,3);
+insert into actions_tariffs values (6,5,3);
+
+insert into actions_bonuses values (1,5,1);
+insert into actions_bonuses values (2,1,2);
+insert into actions_bonuses values (3,1,3);
+insert into actions_bonuses values (4,4,3);
+
+insert into persons values 
+(1,4001111222,'ÈÂÀÍ','ÈÂÀÍÎÂÈ×','ÀÍÄĞÅÅÂ','1990-10-04');
+insert into persons values 
+(2,4001113222,'ÈÂÀÍ','ÎËÅÃÎÂÈ×','ÂÈÉ','1990-10-04');
+insert into persons values 
+(3,4002342422,'ÈÃÎĞÜ','ÏÅÒĞÎÂÈ×','ÈÂÀÍÎÂ','1956-11-14');
+insert into persons values 
+(4,4023456422,'ÈÂÀÍ','ÈÂÀÍÎÂÈ×','ÈÂÀÍÎÂ','1978-12-24');
+insert into persons values 
+(5,4111116422,'ÀËÅÊÑÀÍÄĞ','ÀĞÒÅÌÎÂÈ×','ÑÅ×ÈÍ','1989-01-24');
+
+insert into numbers values (
+			1, 9216563548);
+insert into numbers values (
+			2, 9215346454);
+insert into numbers values (
+			3, 9213455344);
+insert into numbers values (
+			4, 9215455566);
+insert into numbers values (
+			5, 9215433566);
+			
+insert into subs values (
+1,1,1,100.0,1);
+insert into subs values (
+2,2,2,150.0,2);
+insert into subs values (
+3,3,3,-50.0,3);
+insert into subs values (
+4,4,4,152.34,2);
+insert into subs values (
+5,5,5,12.22,1);
+
+insert into payments values
+(1,1,100.0,current_timestamp (0));
+insert into payments values
+(2,2,10.0,current_timestamp (0));
+insert into payments values
+(3,3,10.0,current_timestamp (0));
+insert into payments values
+(4,4,50.0,current_timestamp (0));
+insert into payments values
+(5,5,25.50,current_timestamp (0));
+
+

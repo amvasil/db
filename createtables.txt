@@ -1,37 +1,73 @@
-create table subs (sub_id int primary key,
-		   name varchar(30) not null,
-	           sec_name varchar(30),
-		   surname varchar(100) not null);
-create table plans (plan_id int primary key,
-	            plan_name varchar(100) not null unique,
-		    call_cost float not null,
-		    sms_cost float not null);
-create table balances (balance_id int primary key,
-		      balance float not null);
-create table bonuses (bonus_id int primary key,
-		     bonus_name varchar(100) not null unique,
-	             bonus_type int not_null,
-		     discont float not_null);
-create table subs_conditions (sc_id int primary key,
-			  sub_id int references subs(sub_id),
-			  plan_id int references plans(plan_id),
-		          balance_id int references 							balances(balance_id));
-create table subs_bonuses (sb_id int primary key,
-			   sc_id int references 					subs_conditions(sc_id),
-			   bonus_id int references 					bonuses(bonus_id));
-create table numbers (number_id int primary key,
-		      number int unique not null,
-		      sc_id int references subs_conditions(sc_id));
-
-create table transactions(transaction_id int primary key,
-			  amount float not null,
-			  sc_id int references                                			subs_conditions(sc_id));
-
-
-create table activity (activity_id int primary key,
-		       activity_type int not null,
-		       outcome char(1) not_null,
-		       length int not_null,
-		       sc_id int references subs_conditions(sc_id));
 commit;
-		        
+drop database;
+commit;
+SET NAMES WIN1251;
+create database 'C:/db/nanofon.fdb' user 'SYSDBA' password 'masterkey' DEFAULT CHARACTER SET WIN1251;
+connect 'C:/db/nanofon.fdb' user 'SYSDBA' password 'masterkey';
+
+create table persons (
+			id int primary key,
+			passport decimal(10,0) not null unique check (passport >= 1000000000),
+			name varchar(20) not null,
+			sec_name varchar(20),
+			surname varchar(20) not null,
+			birth date not null);
+create table tariffs (
+			id int primary key,
+			tariff_name varchar(20)
+			);
+create table numbers (
+			id int primary key,
+			number decimal(10,0)  not null unique check (number >= 1000000000));
+create table subs (
+			id int primary key,
+			person int references persons(id) not null,
+			number int references numbers(id) not null,
+			balance decimal(10,2) not null,
+			tariff int references tariffs(id) not null);
+commit;	        
+
+insert into persons values 
+(1,4001111222,'ÈÂÀÍ','ÈÂÀÍÎÂÈ×','ÀÍÄĞÅÅÂ','1990-10-04');
+insert into persons values 
+(2,4001113222,'ÈÂÀÍ','ÎËÅÃÎÂÈ×','ÂÈÉ','1990-10-04');
+insert into persons values 
+(3,4002342422,'ÈÃÎĞÜ','ÏÅÒĞÎÂÈ×','ÈÂÀÍÎÂ','1956-11-14');
+insert into persons values 
+(4,4023456422,'ÈÂÀÍ','ÈÂÀÍÎÂÈ×','ÈÂÀÍÎÂ','1978-12-24');
+insert into persons values 
+(5,4111116422,'ÀËÅÊÑÀÍÄĞ','ÀĞÒÅÌÎÂÈ×','ÑÅ×ÈÍ','1989-01-24');
+
+insert into tariffs values(
+			1,	'SIMPLE');
+insert into numbers values (
+			1, 9216563548);
+insert into numbers values (
+			2, 9215346454);
+insert into numbers values (
+			3, 9213455344);
+insert into numbers values (
+			4, 9215455566);
+insert into numbers values (
+			5, 9215433566);
+			
+insert into subs values (
+1,1,1,100.0,1);
+insert into subs values (
+2,2,2,150.0,1);
+insert into subs values (
+3,3,3,-50.0,1);
+insert into subs values (
+4,4,4,152.34,1);
+insert into subs values (
+5,5,5,12.22,1);
+
+
+select persons.name,persons.surname,numbers.number,tariffs.tariff_name,subs.balance
+from persons,numbers,tariffs,subs
+where subs.person=persons.id and
+	  subs.number=numbers.id and
+	  subs.tariff=tariffs.id ;
+
+
+commit;

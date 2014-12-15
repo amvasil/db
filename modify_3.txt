@@ -1,0 +1,20 @@
+create table inet_prices (
+			id int primary key,
+			price decimal(6,2) not null);
+insert into inet_prices values (8,9.0);
+insert into inet_prices values (9,15.0);
+
+insert into actions values (8);
+insert into actions values (9);
+
+insert into actions_tariffs values (7,8,1);
+insert into actions_tariffs values (8,8,2);
+insert into actions_tariffs values (9,9,3);
+
+
+alter table tariffs add 
+			min_balance decimal(10,2) default 0.0;
+update tariffs set min_balance = -10.0 where id = 3;
+update tariffs set min_balance = 0.0 where id = 1;
+update tariffs set min_balance = 0.0 where id = 2;
+commit;

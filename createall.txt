@@ -1,0 +1,71 @@
+commit;
+drop database;
+commit;
+SET NAMES WIN1251;
+create database 'C:/db/nanofon.fdb' user 'SYSDBA' password 'masterkey' DEFAULT CHARACTER SET WIN1251;
+connect 'C:/db/nanofon.fdb' user 'SYSDBA' password 'masterkey';
+
+create table persons (
+			id int primary key,
+			passport decimal(10,0) not null ,
+			name varchar(20) not null,
+			sec_name varchar(20),
+			surname varchar(20) not null,
+			birth date not null);
+create table tariffs (
+			id int primary key,
+			tariff_name varchar(20));
+create table numbers (
+			id int primary key,
+			number decimal(10,0) not null );
+create table subs (
+			id int primary key,
+			person int references persons(id) not null,
+			number int references numbers(id) not null,
+			balance decimal(10,2) not null,
+			tariff int references tariffs(id) not null);
+create table payments (
+			id int primary key,
+			sub int references subs(id) not null,
+			amount decimal(8,2) not null,
+			ptime timestamp not null);
+create table sms_prices (
+			id int primary key,
+			price decimal(6,2) not null);
+create table call_prices (
+			id int primary key,
+			price decimal(6,2) not null);
+create table actions (
+			id int primary key);
+create table transactions (
+			id int primary key,
+			sub int references subs(id) not null,
+			action int references actions(id) not null,
+			amount int not null,
+			actime timestamp not null);
+create table bonuses (
+			id int primary key,
+			name varchar (20) not null unique,
+			minutes_amount int,
+			sms_amount int,
+			payments_amount decimal(10,2),
+			init_amount_calls int,
+			init_amount_sms int,
+			days int);
+create table actions_bonuses(
+			id int primary key,
+			action int references actions(id) not null,
+			bonus int references bonuses(id) not null);
+create table actions_tariffs(
+			id int primary key,
+			action int references actions(id) not null,
+			tariff int references tariffs(id) not null);
+create table subs_bonuses(
+			id int primary key,
+			sub int references subs(id) not null,
+			bonus int references bonuses(id) not null,
+			amount_left_sms int,
+			amount_left_calls int,
+			start_date date);			
+			
+commit;
