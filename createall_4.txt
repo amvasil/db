@@ -218,28 +218,134 @@ insert into subs values (
 insert into subs values (
 14,14,14,100.0,5);
 
-
-insert into payments values
-(1,1,100.0,current_timestamp (0));
-insert into payments values
-(2,2,10.0,current_timestamp (0));
-insert into payments values
-(3,3,10.0,current_timestamp (0));
-insert into payments values
-(4,4,50.0,current_timestamp (0));
-insert into payments values
-(5,5,25.50,current_timestamp (0));
 			
 commit;
-
-
-
-
-
 
 
 alter table tariffs add 
 			min_balance decimal(10,2) default 0.0 not null;
 update tariffs set min_balance = -10.0 where id = 3;
 commit;
+
+create sequence gen_payid;
+create sequence gen_transid;
+
+
+	
+
+set term ^ ;
+create procedure do_payment (num_id int,amount decimal(8,2),t timestamp ) as
+	declare variable sub_id int;
+	begin
+	sub_id = (select id from subs where number = :num_id);
+	insert into payments values (gen_id(gen_payid,1),:sub_id,:amount,:t);
+	update subs set balance = balance+:amount where subs.id = :sub_id;
+	end ^
+
+create procedure sms (num_id int,amount int) as
+	declare variable sub_id int;
+	declare variable cost decimal(6,2);
+	declare variable act int;
+	declare variable tariff int;
+	begin
+	sub_id = (select id from subs where number = :num_id);
+	tariff = (select tariff from subs where id=:sub_id);
+	
+	cost = (select price from sms_prices,actions_tariffs where sms_prices.id = actions_tariffs.action and actions_tariffs.tariff=:tariff);
+	act = (select sms_prices.id from sms_prices,actions_tariffs where sms_prices.id = actions_tariffs.action and actions_tariffs.tariff=:tariff);
+	insert into transactions (id,sub,action,amount,actime) values 
+		(gen_id(gen_transid,1),:sub_id,:act,:amount,dateadd(-rand()*31 day to current_timestamp));
+	update subs set balance = balance - :cost*:amount where subs.id = :sub_id;
+	end ^
+	
+	create procedure call (num_id int,amount int) as
+	declare variable sub_id int;
+	declare variable cost decimal(6,2);
+	declare variable act int;
+	declare variable tariff int;
+	begin
+	sub_id = (select id from subs where number = :num_id);
+	tariff = (select tariff from subs where id=:sub_id);
+	
+	cost = (select price from call_prices,actions_tariffs where call_prices.id = actions_tariffs.action and actions_tariffs.tariff=:tariff);
+	act = (select call_prices.id from call_prices,actions_tariffs where call_prices.id = actions_tariffs.action and actions_tariffs.tariff=:tariff);
+	insert into transactions (id,sub,action,amount,actime) values 
+		(gen_id(gen_transid,1),:sub_id,:act,:amount,dateadd(-rand()*31 day to current_timestamp));
+	update subs set balance = balance - :cost*:amount where subs.id = :sub_id;
+	end ^
+	
+set term ; ^
+
+execute procedure do_payment(1,50.0,dateadd(-1 day to current_timestamp));
+execute procedure do_payment(2,50.0,dateadd(-2 day to current_timestamp));
+execute procedure do_payment(3,150.0,dateadd(-15 day to current_timestamp));
+execute procedure do_payment(5,350.0,dateadd(-2 day to current_timestamp));
+execute procedure do_payment(4,20.0,dateadd(-8 day to current_timestamp));
+execute procedure do_payment(8,90.0,dateadd(-3 day to current_timestamp));
+execute procedure do_payment(4,20.0,dateadd(-9 day to current_timestamp));
+execute procedure do_payment(2,40.0,dateadd(-1 day to current_timestamp));
+execute procedure do_payment(1,130.0,dateadd(-1 day to current_timestamp));
+execute procedure do_payment(10,200.0,dateadd(-12 day to current_timestamp));
+execute procedure do_payment(12,110.0,dateadd(-17 day to current_timestamp));
+execute procedure do_payment(14,80.0,dateadd(-17 day to current_timestamp));
+
+execute procedure call(1,6);
+execute procedure call(3,4);
+execute procedure call(1,1);
+execute procedure call(8,2);
+execute procedure call(3,9);
+execute procedure call(8,1);
+execute procedure call(4,2);
+execute procedure call(5,9);
+execute procedure call(9,3);
+execute procedure call(6,1);
+execute procedure call(7,4);
+execute procedure call(7,1);
+execute procedure call(8,12);
+execute procedure call(9,10);
+execute procedure call(10,9);
+execute procedure call(11,3);
+execute procedure call(12,3);
+execute procedure call(13,2);
+execute procedure call(14,1);
+
+execute procedure sms(1,1);
+execute procedure sms(2,2);
+execute procedure sms(3,1);
+execute procedure sms(4,1);
+execute procedure sms(5,1);
+execute procedure sms(6,1);
+execute procedure sms(7,1);
+execute procedure sms(8,1);
+execute procedure sms(9,1);
+execute procedure sms(10,1);
+execute procedure sms(11,1);
+execute procedure sms(12,1);
+execute procedure sms(13,1);
+execute procedure sms(14,1);
+execute procedure sms(14,1);
+execute procedure sms(14,1);
+execute procedure sms(3,1);
+execute procedure sms(6,1);
+execute procedure sms(8,1);
+execute procedure sms(1,1);
+execute procedure sms(3,1);
+execute procedure sms(4,1);
+execute procedure sms(1,1);
+execute procedure sms(2,1);
+execute procedure sms(5,1);
+execute procedure sms(1,1);
+
+commit;
+
+set term ^ ;
+create procedure delete_older (d date) as
+	begin
+	 delete from transactions where actime <=:d;
+	end ^
+set term ; ^
+commit;
+
+create view a_names as select name,surname from persons
+where name like 'À%';
 
