@@ -1,0 +1,88 @@
+set term ^ ;
+create procedure tariff_stat (starttime timestamp,endtime timestamp) returns
+	(tariff_name varchar(20),sum_payments decimal(10,2),sum_sms int,sum_minutes int) as
+	declare variable tariff_id int;
+	declare variable sub_id int;
+	
+	begin
+		for select id from tariffs into :tariff_id do
+		begin
+			sum_payments=0;
+			sum_sms=coalesce((select sum(amount) from transactions t where tariff=:tariff_id and 
+				exists(select * from sms_prices where id=t.action) and actime between :starttime and :endtime),0);
+			sum_minutes=coalesce((select sum(amount) from transactions t where tariff=:tariff_id and 
+				exists(select * from call_prices where id=t.action) and actime between :starttime and :endtime),0);
+			for select id from subs where tariff=:tariff_id into :sub_id do
+			begin
+					sum_payments = :sum_payments+coalesce(
+					(select sum(amount) from payments where sub=:sub_id and ptime between :starttime and :endtime),0);
+					
+			end
+			tariff_name = (select tariff_name from tariffs where id = :tariff_id);
+			suspend;
+		end
+	end ^
+set term ; ^
+create sequence gen_sbid;
+commit;
+set term ^ ;
+create procedure give_bonuses  as
+	declare variable sub_id int;
+	declare variable sum_minutes int;
+	declare variable sum_sms int;
+	declare variable sum_payments decimal(10,2);
+	declare variable cur_month smallint;
+	declare variable bonus_id int;
+	declare variable req_minutes int;
+	declare variable req_sms int;
+	declare variable req_payments decimal(10,2);
+	declare variable give_minutes int;
+	declare variable give_sms int;
+	declare variable give_start_date date;
+	declare variable give_days int;
+	declare variable flag int;
+	begin
+		cur_month = extract(month from current_date);
+		for select id from subs where balance > 0 into :sub_id do
+		begin	
+			sum_minutes = coalesce((select sum(amount) from transactions tr where exists(select * from call_prices where id=tr.action) 
+				and extract(month from actime)=:cur_month and sub=:sub_id),0);
+			sum_sms = coalesce((select sum(amount) from transactions tr where exists(select * from sms_prices where id=tr.action) 
+				and extract(month from actime)=:cur_month and sub=:sub_id),0);
+			sum_payments = coalesce((select sum(amount) from payments where sub = :sub_id and extract(month from ptime)=:cur_month),0);
+			for select id from bonuses into :bonus_id do
+			begin
+				req_minutes = (select minutes_amount from bonuses where id = :bonus_id);
+				req_payments = (select payments_amount from bonuses where id = :bonus_id);
+				req_sms = (select sms_amount from bonuses where id = :bonus_id);
+				flag=1;
+				if(:req_minutes is not null and :sum_minutes < :req_minutes) then
+					flag=0;
+				if(:req_sms is not null and :sum_sms < :req_sms) then
+					flag=0;
+				if(:req_payments is not null and :sum_payments < req_payments) then
+					flag=0;
+				if(flag=1) then
+				begin
+					give_minutes=(select init_amount_calls from bonuses where id=:bonus_id);
+					give_sms=(select init_amount_sms from bonuses where id=:bonus_id);
+					give_start_date=null;
+					give_days = (select days from bonuses where id=:bonus_id);
+					if(give_days is not null) then
+					begin
+						give_start_date = current_date;
+					end
+					insert into subs_bonuses (id,sub,bonus,amount_left_sms,amount_left_calls,start_date,expire_date) values
+						(gen_id(gen_sbid,1),:sub_id,:bonus_id,:give_sms,:give_minutes,:give_start_date,dateadd(:give_days day to :give_start_date));
+				end	
+			end
+		end
+	end ^
+set term ; ^
+
+commit;
+
+select * from tariff_stat(dateadd(-30 day to current_timestamp),current_timestamp);
+execute procedure give_bonuses;
+select 'Bonuses granted' from rdb$database;
+

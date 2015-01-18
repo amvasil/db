@@ -83,11 +83,11 @@ insert into tariffs values
 (6,'Ñòàáèëüíûé');
 
 insert into bonuses values
-(1,'Áîëòóí',200,NULL,NULL,NULL,NULL,30);
+(1,'Áîëòóí',100,NULL,NULL,NULL,NULL,30);
 insert into bonuses values
 (2,'Òåëåãğàôèñò',NULL,300,NULL,NULL,10,30);
 insert into bonuses values
-(3,'Ìåöåíàò',NULL,NULL,1000,100,100,NULL);
+(3,'Ìåöåíàò',NULL,NULL,400,100,100,NULL);
 
 insert into sms_prices values (1,0.0);
 insert into sms_prices values (2,2.0);
@@ -145,83 +145,7 @@ insert into actions_bonuses values (2,1,2);
 insert into actions_bonuses values (3,1,3);
 insert into actions_bonuses values (4,4,3);
 
-insert into persons values 
-(1,4001111222,'ÈÂÀÍ','ÈÂÀÍÎÂÈ×','ÀÍÄĞÅÅÂ','1990-10-04');
-insert into persons values 
-(2,4001113222,'ÈÂÀÍ','ÎËÅÃÎÂÈ×','ÂÈÉ','1990-10-04');
-insert into persons values 
-(3,4002342422,'ÈÃÎĞÜ','ÏÅÒĞÎÂÈ×','ÈÂÀÍÎÂ','1956-11-14');
-insert into persons values 
-(4,4023456422,'ÈÂÀÍ','ÈÂÀÍÎÂÈ×','ÈÂÀÍÎÂ','1978-12-24');
-insert into persons values 
-(5,4111116422,'ÀËÅÊÑÀÍÄĞ','ÀĞÒÅÌÎÂÈ×','ÑÅ×ÈÍ','1989-01-24');
-insert into persons values 
-(6,4100556422,'ÀËÅÊÑÀÍÄĞ','ÈÂÀÍÎÂÈ×','ÁÓÉÍÎÂ','1949-11-24');
-insert into persons values 
-(7,4113759052,'ÈÂÀÍ','ÃÅÍÍÀÄÜÅÂÈ×','ÁÀĞÀÍÎÂ','1977-03-03');
-insert into persons values 
-(8,4113243443,'ÈÃÎĞÜ','ÈÃÎĞÅÂÈ×','ÑÓÕÎÂ','1987-01-03');
-insert into persons values 
-(9,4123876543,'ÀËÅÊÑÀÍÄĞ','ÀËÅÊÑÀÍÄĞÎÂÈ×','ÑÈÄÎĞÎÂ','1989-01-24');
-insert into persons values 
-(10,4109566332,'ÀÍÄĞÅÉ','ÏÅÒĞÎÂÈ×','ÀÍÄĞÅÅÂ','1999-01-24');
-insert into persons values 
-(11,4122222243,'ÈÍÍÀ','ÈÂÀÍÎÂÍÀ','ÑÓÕÎÂÀ','1989-01-28');
-insert into persons values 
-(12,4191986043,'ÀËÅÍÀ','ÈÂÀÍÎÂÍÀ','ÁÀĞÀÍÎÂÀ','1988-01-24');
-insert into persons values 
-(13,4198764643,'ÈĞÈÍÀ','ÎËÅÃÎÂÍÀ','ÑÅ×ÈÍÀ','1948-07-21');
-insert into persons values 
-(14,4145334223,'ÎËÜÃÀ','ÀËÅÊÑÀÍÄĞÎÂÍÀ','ÎËÜÃÎÂÀ','1978-12-21');
 
-create sequence gen_numid;
-insert into numbers values (gen_id(gen_numid,1),rand()*9999999+9210000000);
-insert into numbers values (gen_id(gen_numid,1),rand()*9999999+9210000000);
-insert into numbers values (gen_id(gen_numid,1),rand()*9999999+9210000000);
-insert into numbers values (gen_id(gen_numid,1),rand()*9999999+9210000000);
-insert into numbers values (gen_id(gen_numid,1),rand()*9999999+9210000000);
-insert into numbers values (gen_id(gen_numid,1),rand()*9999999+9210000000);
-insert into numbers values (gen_id(gen_numid,1),rand()*9999999+9210000000);
-insert into numbers values (gen_id(gen_numid,1),rand()*9999999+9210000000);
-insert into numbers values (gen_id(gen_numid,1),rand()*9999999+9210000000);
-insert into numbers values (gen_id(gen_numid,1),rand()*9999999+9210000000);
-insert into numbers values (gen_id(gen_numid,1),rand()*9999999+9210000000);
-insert into numbers values (gen_id(gen_numid,1),rand()*9999999+9210000000);
-insert into numbers values (gen_id(gen_numid,1),rand()*9999999+9210000000);
-insert into numbers values (gen_id(gen_numid,1),rand()*9999999+9210000000);
-insert into numbers values (gen_id(gen_numid,1),rand()*9999999+9210000000);
-			
-insert into subs values (
-1,1,1,100.0,1);
-insert into subs values (
-2,2,2,150.0,2);
-insert into subs values (
-3,3,3,-50.0,3);
-insert into subs values (
-4,4,4,152.34,2);
-insert into subs values (
-5,5,5,12.22,1);
-insert into subs values (
-6,6,6,100.0,1);
-insert into subs values (
-7,7,7,100.0,1);
-insert into subs values (
-8,8,8,100.0,1);
-insert into subs values (
-9,9,9,100.0,1);
-insert into subs values (
-10,10,10,100.0,4);
-insert into subs values (
-11,11,11,100.0,1);
-insert into subs values (
-12,12,12,100.0,6);
-insert into subs values (
-13,13,13,100.0,1);
-insert into subs values (
-14,14,14,100.0,5);
-
-			
-commit;
 
 
 alter table tariffs add 
@@ -229,10 +153,10 @@ alter table tariffs add
 update tariffs set min_balance = -10.0 where id = 3;
 commit;
 
+
+
 create sequence gen_payid;
 create sequence gen_transid;
-
-
 	
 
 set term ^ ;
@@ -260,7 +184,7 @@ create procedure sms (num_id int,amount int) as
 	update subs set balance = balance - :cost*:amount where subs.id = :sub_id;
 	end ^
 	
-	create procedure call (num_id int,amount int) as
+create procedure call (num_id int,amount int) as
 	declare variable sub_id int;
 	declare variable cost decimal(6,2);
 	declare variable act int;
@@ -278,65 +202,7 @@ create procedure sms (num_id int,amount int) as
 	
 set term ; ^
 
-execute procedure do_payment(1,50.0,dateadd(-1 day to current_timestamp));
-execute procedure do_payment(2,50.0,dateadd(-2 day to current_timestamp));
-execute procedure do_payment(3,150.0,dateadd(-15 day to current_timestamp));
-execute procedure do_payment(5,350.0,dateadd(-2 day to current_timestamp));
-execute procedure do_payment(4,20.0,dateadd(-8 day to current_timestamp));
-execute procedure do_payment(8,90.0,dateadd(-3 day to current_timestamp));
-execute procedure do_payment(4,20.0,dateadd(-9 day to current_timestamp));
-execute procedure do_payment(2,40.0,dateadd(-1 day to current_timestamp));
-execute procedure do_payment(1,130.0,dateadd(-1 day to current_timestamp));
-execute procedure do_payment(10,200.0,dateadd(-12 day to current_timestamp));
-execute procedure do_payment(12,110.0,dateadd(-17 day to current_timestamp));
-execute procedure do_payment(14,80.0,dateadd(-17 day to current_timestamp));
 
-execute procedure call(1,6);
-execute procedure call(3,4);
-execute procedure call(1,1);
-execute procedure call(8,2);
-execute procedure call(3,9);
-execute procedure call(8,1);
-execute procedure call(4,2);
-execute procedure call(5,9);
-execute procedure call(9,3);
-execute procedure call(6,1);
-execute procedure call(7,4);
-execute procedure call(7,1);
-execute procedure call(8,12);
-execute procedure call(9,10);
-execute procedure call(10,9);
-execute procedure call(11,3);
-execute procedure call(12,3);
-execute procedure call(13,2);
-execute procedure call(14,1);
-
-execute procedure sms(1,1);
-execute procedure sms(2,2);
-execute procedure sms(3,1);
-execute procedure sms(4,1);
-execute procedure sms(5,1);
-execute procedure sms(6,1);
-execute procedure sms(7,1);
-execute procedure sms(8,1);
-execute procedure sms(9,1);
-execute procedure sms(10,1);
-execute procedure sms(11,1);
-execute procedure sms(12,1);
-execute procedure sms(13,1);
-execute procedure sms(14,1);
-execute procedure sms(14,1);
-execute procedure sms(14,1);
-execute procedure sms(3,1);
-execute procedure sms(6,1);
-execute procedure sms(8,1);
-execute procedure sms(1,1);
-execute procedure sms(3,1);
-execute procedure sms(4,1);
-execute procedure sms(1,1);
-execute procedure sms(2,1);
-execute procedure sms(5,1);
-execute procedure sms(1,1);
 
 commit;
 
@@ -348,6 +214,165 @@ create procedure delete_older (d date) as
 set term ; ^
 commit;
 
-create view a_names as select name,surname from persons
-where name like 'À%';
+create table t_names (id int primary key,name varchar(20));
+insert into t_names values (1,'Èâàí');
+insert into t_names values (2,'Âëàäèìèğ');
+insert into t_names values (3,'Ïåòğ');
+insert into t_names values (4,'Àëåêñàíäğ');
+insert into t_names values (5,'Ãåííàäèé');
+insert into t_names values (6,'Ñåìåí');
+insert into t_names values (7,'Ìèõàèë');
+insert into t_names values (8,'Àëåêñåé');
+insert into t_names values (9,'Àíäğåé');
+insert into t_names values (10,'Òèìîôåé');
+insert into t_names values (11,'Àôàíàñèé');
+insert into t_names values (12,'Ğóñëàí');
+insert into t_names values (13,'Èëüÿ');
+insert into t_names values (14,'Şğèé');
+
+create table t_sec_names (id int primary key,sec_name varchar(20));
+insert into t_sec_names values (1,'Èâàíîâè÷');
+insert into t_sec_names values (2,'Âëàäèìèğîâè÷');
+insert into t_sec_names values (3,'Ïåòğîâè÷');
+insert into t_sec_names values (4,'Àëåêñàíäğîâè÷');
+insert into t_sec_names values (5,'Ãåííàäèåâè÷');
+insert into t_sec_names values (6,'Ñåìåíîâè÷');
+insert into t_sec_names values (7,'Ìèõàéëîâè÷');
+insert into t_sec_names values (8,'Àëåêñååâè÷');
+insert into t_sec_names values (9,'Àíäğååâè÷');
+insert into t_sec_names values (10,'Òèìîôååâè÷');
+insert into t_sec_names values (11,'Àôàíàñèåâè÷');
+insert into t_sec_names values (12,'Ğóñëàíîâè÷');
+insert into t_sec_names values (13,'Èëüè÷');
+insert into t_sec_names values (14,'Şğüåâè÷');
+
+create table t_surnames (id int primary key,surname varchar(20));
+insert into t_surnames values (1,'Èâàíîâ');
+insert into t_surnames values (2,'Ïåòğîâ');
+insert into t_surnames values (3,'Ñèäîğîâ');
+insert into t_surnames values (4,'Áûêîâ');
+insert into t_surnames values (5,'Äóğîâ');
+insert into t_surnames values (6,'Ñå÷èí');
+insert into t_surnames values (7,'Ëèâøèö');
+insert into t_surnames values (8,'Ëàíäàó');
+
+create sequence gen_personid;
+
+set term ^ ;
+create procedure fill_persons as
+	declare variable i int;
+	declare variable pass decimal(10);
+	declare variable name varchar(20);
+	declare variable sec_name varchar(20);
+	declare variable surname varchar(20);
+	declare variable days int;
+	declare variable random int;
+	begin
+		i=0;
+		while (i < 100000) do
+			begin
+			pass = 4010000000+rand()*999999;
+			if (not exists(select * from persons where passport=:pass)) then
+			begin
+				random = trunc(rand()*14)+1;
+				name = (select name from t_names where id = :random);
+				random = trunc(rand()*14)+1;
+				sec_name = (select sec_name from t_sec_names where id = :random);
+				random = trunc(rand()*8)+1;
+				surname = (select surname from t_surnames where id = :random);
+				days = -rand()*30*12*50;
+				insert into persons values (gen_id(gen_personid,1),:pass,:name,:sec_name,:surname,
+				dateadd(:days day to date '1995-01-01'));
+				i=i+1;
+			end
+			end
+	end ^
+set term ; ^
+commit;
+
+execute procedure fill_persons;
+select  count(*) as persons from persons;
+
+create sequence gen_numid;
+
+set term ^ ;
+create procedure fill_numbers  as
+	declare variable i int;
+	declare variable num decimal(10);
+	begin
+		i=0;
+		while (i < 110000) do
+			begin
+			num = 9210000000+rand()*9999999;
+			if (not exists(select * from numbers where number=:num)) then
+			begin
+				insert into numbers values (gen_id(gen_numid,1),:num);
+				i=i+1;
+			end
+			end
+	end ^
+set term ; ^
+commit;
+
+execute procedure fill_numbers;
+select  count(*) as numbers from numbers;
+
+
+set term ^ ;
+create procedure fill_subs  as
+	declare variable i int;
+	begin
+		i=1;
+		while (i <= 100000) do
+			begin
+			insert into subs values (:i,:i,:i,rand()*20,rand()*5+1);
+			i=i+1;
+			end
+	end ^
+set term ; ^
+commit;
+
+execute procedure fill_subs;
+select  count(*) as subs from subs;
+
+set term ^ ;
+create procedure fill_payments  as
+	declare variable i int;
+	begin
+		i=1;
+		while (i <= 100000) do
+			begin
+			execute procedure do_payment (rand()*99999+1,rand()*90+10,dateadd(-rand()*31 day to current_timestamp));
+			i=i+1;
+			end
+	end ^
+set term ; ^
+commit;
+
+execute procedure fill_payments;
+select  count(*) as payments from payments;
+
+set term ^ ;
+create procedure fill_actions  as
+	declare variable i int;
+	begin
+		i=1;
+		while (i <= 50000) do
+			begin
+			execute procedure call(rand()*99999+1,rand()*29+1);
+			execute procedure sms(rand()*99999+1,1);
+			i=i+1;
+			end
+	end ^
+set term ; ^
+commit;
+
+execute procedure fill_actions;
+select  count(*) as transactions from transactions;
+
+
+
+commit;
+
+
 

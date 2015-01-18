@@ -1,0 +1,58 @@
+set term ^ ;
+create or alter trigger trg_gen_numid for numbers
+active before insert position 0
+as
+begin
+  if ((new.id is null) or (new.id = 0)) then
+  begin
+    new.id = gen_id(gen_numid, 1);
+  end
+end ^
+set term ; ^
+
+set term ^ ;
+create or alter trigger trg_del_sub for subs
+active before delete position 0
+as begin
+	delete from transactions where sub = old.id;
+	delete from payments where sub = old.id;
+end ^
+set term ; ^
+
+create or alter exception NEG_BALANCE 'Недостаточно денег на счету';
+set term ^ ;
+create or alter trigger trg_check_balance for transactions
+active before insert position 0
+as
+	declare variable balance decimal(10,2);
+begin
+	balance = (select balance from subs where id=new.sub);
+	if(balance <= 0) then exception NEG_BALANCE;
+end ^
+set term ; ^
+
+insert into bonuses values (4,'Рекрут',NULL,NULL,NULL,NULL,NULL,NULL);
+
+create  sequence gen_sbid;
+set term ^ ;
+create procedure add_bonus (sub_id int,bonus_id int,sms_amount int,minutes_amount int,days int) as
+declare variable end_date date;
+declare variable start_date date;
+begin
+	start_date = current_date;
+	if(days is null) then
+		start_date = null;
+	end_date = dateadd(days day to :start_date);
+	insert into subs_bonuses (id,sub,bonus,amount_left_sms,amount_left_calls,start_date,expire_date) values
+		(gen_id(gen_sbid,1),:sub_id, :bonus_id, :sms_amount, :minutes_amount,:start_date,:end_date);
+end ^
+	
+create or alter trigger trg_new_sub for subs
+active after insert position 0 as
+	begin
+		execute procedure add_bonus (new.id,4,NULL,NULL,NULL);
+		update subs set balance = balance+100 where id = new.id;
+	end ^
+set term ; ^
+	
+	
